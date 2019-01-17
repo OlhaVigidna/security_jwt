@@ -2,7 +2,6 @@ package com.example.security_jwt.config;
 
 
 
-import com.example.security_jwt.model.LoginFilter;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,13 +27,15 @@ public class Security extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .and()
-                .addFilterBefore(new LoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new LoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new RequestProcessingJWTFilter(),
+                        UsernamePasswordAuthenticationFilter.class);
+
+
 //                // We filter the api/login requests
 //                .addFilterBefore(new LoginFilter("/login", authenticationManager()),
 //                        UsernamePasswordAuthenticationFilter.class)
 //                // And filter other requests to check the presence of JWT in header
-//                .addFilterBefore(new JWTAuthenticationFilter(),
-//                        UsernamePasswordAuthenticationFilter.class);
     }
 
 

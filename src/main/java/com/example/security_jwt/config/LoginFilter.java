@@ -1,9 +1,12 @@
-package com.example.security_jwt.model;
+package com.example.security_jwt.config;
 
+
+
+
+import com.example.security_jwt.model.AccountCredentials;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.jsonwebtoken.Jwts;
-import org.bouncycastle.crypto.tls.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -70,13 +73,14 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
             HttpServletRequest req,
             HttpServletResponse res, FilterChain chain,
             Authentication auth) throws IOException, ServletException {
-        String name = auth.getName();
+
         String jwtoken = Jwts.builder()
-                .setSubject(name)
-                .sighWith(SignatureAlgorithm.HS512, "yes".getBytes())
-//                .setExpiration(new Date(System.currentTimeMillis()+200000))
-                .compact;
-        res.addHeader("Authorization", "Bearer" + jwtoken);
+                .setSubject(auth.getName())
+                .signWith(SignatureAlgorithm.HS512, "yes".getBytes())
+//                .setExpiration(new Date(System.currentTimeMillis() + 200000))
+                .compact();
+
+        res.addHeader("Authorization", "Bearer " + jwtoken);
     }
 }
 
